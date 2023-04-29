@@ -13,7 +13,7 @@ public class Board extends JPanel {
     private static final float STROKE_WIDTH = 2.0f;
 
     public Board() {
-        setPreferredSize(new Dimension(300, 300));
+        setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
     }
 
     @Override
