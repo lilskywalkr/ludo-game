@@ -1,21 +1,50 @@
 package Client;
 
-import java.awt.*;
-import java.util.InputMismatchException;
-import java.util.Objects;
 import javax.swing.*;
+import java.awt.*;
+import java.util.*;
 
 public class Board extends JPanel {
 
-    private static final int SQUARE_SIZE = 50;
-    private static final int CIRCLE_SIZE = 50;
-    private static final int PAWN_SIZE = 30;
-    private static final int SPACE_BETWEEN_CIRCLE = 60;
-    private static final int BIG_SQUARE_SIZE = 300;
-    private static final float STROKE_WIDTH = 2.0f;
+    public static final int SQUARE_SIZE = 50;
+    public static final int CIRCLE_SIZE = 50;
+    public static final int PAWN_SIZE = 30;
+    public static final int SPACE_BETWEEN_CIRCLE = 60;
+    public static final int BIG_SQUARE_SIZE = 300;
+    public static final float STROKE_WIDTH = 2.0f;
+    LinkedList<Pawn> pawns;
+    LinkedHashMap<Color,LinkedList<Point>> baseFields;
 
     public Board() {
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
+        initializeBases();
+    }
+    public LinkedList<Point> setBaseCordinates (int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
+        LinkedList<Point> base = new LinkedList<>();
+        base.add(new Point(x1, y1));
+        base.add(new Point(x2, y2));
+        base.add(new Point(x3, y3));
+        base.add(new Point(x4, y4));
+        return base;
+    }
+    public void initializeBases() {
+        baseFields = new LinkedHashMap<>();
+        //BIG_SQUARE_SIZE/2-CIRCLE_SIZE/2
+        baseFields.put(Color.RED, setBaseCordinates(75, 70, 195, 70, 75, 190, 195, 190));
+        baseFields.put(Color.GREEN, setBaseCordinates(525, 70, 645, 70, 525, 190, 645, 190));
+        baseFields.put(Color.YELLOW, setBaseCordinates(75, 520, 195, 520, 75, 640, 195, 640));
+        baseFields.put(Color.BLUE, setBaseCordinates(525, 520, 645, 520, 525, 640, 645, 640));
+        initializePawns();
+    }
+    public void initializePawns() {
+        pawns = new LinkedList<>();
+        for (Map.Entry<Color, LinkedList<Point>> entry : baseFields.entrySet()) {
+            Color color = entry.getKey();
+            LinkedList<Point> cords = entry.getValue();
+            for (Point p : cords) {
+                pawns.add(new Pawn(new Point(p.x, p.y), color));
+            }
+        }
     }
 
     @Override
@@ -45,29 +74,9 @@ public class Board extends JPanel {
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
 
-        // Red pawn
-        drawPawn(g2d, 2, 75, 70);
-        drawPawn(g2d, 2, 195, 70);
-        drawPawn(g2d, 2, 75, 190);
-        drawPawn(g2d, 2, 195, 190);
-
-        // Green pawn
-        drawPawn(g2d, 1, 525, 70);
-        drawPawn(g2d, 1, 645, 70);
-        drawPawn(g2d, 1, 525, 190);
-        drawPawn(g2d, 1, 645, 190);
-
-        // Yellow pawn
-        drawPawn(g2d, 3, 75, 520);
-        drawPawn(g2d, 3, 195, 520);
-        drawPawn(g2d, 3, 75, 640);
-        drawPawn(g2d, 3, 195, 640);
-
-        // Blue pawn
-        drawPawn(g2d, 0, 525, 520);
-        drawPawn(g2d, 0, 645, 520);
-        drawPawn(g2d, 0, 525, 640);
-        drawPawn(g2d, 0, 645, 640);
+        for(Pawn pawn : pawns) {
+            drawPawn(g2d, pawn.getColor(), pawn.getLocation().x, pawn.getLocation().y);
+        }
     }
 
     private void drawColorPart(Graphics2D g2d)
@@ -134,9 +143,18 @@ public class Board extends JPanel {
         g2d.drawRect(x,y, size, size);
     }
 
-    private void drawPawn(Graphics2D g2d, int color, int x, int y) {
+    private void drawPawn(Graphics2D g2d, Color color, int x, int y) {
+        int colorInt;
+        if (color.equals(Color.RED))
+            colorInt = 2;
+        else if(color.equals(Color.GREEN))
+            colorInt = 1;
+        else if(color.equals(Color.YELLOW))
+            colorInt = 3;
+        else
+            colorInt = 0;
         try {
-            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("../assets/" + color + ".png")));
+            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("../assets/" + colorInt + ".png")));
             Image pawnIcon = icon.getImage();
             g2d.drawImage(pawnIcon, x, y, PAWN_SIZE, PAWN_SIZE, null);
         } catch (Exception e) {
