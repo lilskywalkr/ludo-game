@@ -4,6 +4,8 @@ public class Point {
     private int x;
     private int y;
 
+    private boolean checkIfCorrect = false;
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
@@ -36,4 +38,6 @@ public class Point {
     public int hashCode() {
         return Objects.hash(getX(), getY());
     }
+
+    public void setCheckIfCorrect(){this.checkIfCorrect = true;}
 }

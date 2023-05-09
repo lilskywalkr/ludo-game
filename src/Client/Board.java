@@ -108,25 +108,27 @@ public class Board extends JPanel {
         g2d.drawRect(x,y, size, size);
     }
 
-    public int[][] generateBoardCoordinates() {
-        int[][] coordinates = new int[15 * 15][2];
+    public Point[] generateBoardCoordinates() {
+        Point[] coordinates = new Point[15 * 15];
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
                 if(j == 6 || j == 7 || j == 8) {
-                    coordinates[i*15+j][0] = (i+1)*SQUARE_SIZE - SQUARE_SIZE/2;
-                    coordinates[i*15+j][1] = (j+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+//                    coordinates[i*15+j][0] = (i+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+//                    coordinates[i*15+j][1] = (j+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+                    coordinates[i*15+j] = new Point((i+1)*SQUARE_SIZE - SQUARE_SIZE/2,(j+1)*SQUARE_SIZE - SQUARE_SIZE/2);
+                    coordinates[i*15+j].checkIfCorrect = true;
+//                    coordinates[i*15+j].checkIfCorrect = true;
                 }
                 else{
-                    coordinates[i*15+j][0] = -1;
-                    coordinates[i*15+j][1] = -1;
+                    coordinates[i*15+j] = new Point((i+1)*SQUARE_SIZE - SQUARE_SIZE/2,(j+1)*SQUARE_SIZE - SQUARE_SIZE/2);
                 }
             }
         }
 
         for(int i = 6; i < 9 ;i++){
             for (int j = 0; j < 15; j++){
-                coordinates[i*15+j][0] = (i+1)*SQUARE_SIZE - SQUARE_SIZE/2;
-                coordinates[i*15+j][1] = (j+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+                coordinates[i*15+j] = new Point((i+1)*SQUARE_SIZE - SQUARE_SIZE/2,(j+1)*SQUARE_SIZE - SQUARE_SIZE/2);
+                coordinates[i*15+j].checkIfCorrect = true;
             }
         }
         return coordinates;
