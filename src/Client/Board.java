@@ -1,6 +1,7 @@
 package Client;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import javax.swing.JPanel;
 
@@ -39,7 +40,6 @@ public class Board extends JPanel {
                 drawSquare(Color.WHITE,g2d,BIG_SQUARE_SIZE+SQUARE_SIZE*j,SQUARE_SIZE*i,SQUARE_SIZE);
             }
         }
-
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
     }
@@ -108,5 +108,27 @@ public class Board extends JPanel {
         g2d.drawRect(x,y, size, size);
     }
 
+    public int[][] generateBoardCoordinates() {
+        int[][] coordinates = new int[15 * 15][2];
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                if(j == 6 || j == 7 || j == 8) {
+                    coordinates[i*15+j][0] = (i+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+                    coordinates[i*15+j][1] = (j+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+                }
+                else{
+                    coordinates[i*15+j][0] = -1;
+                    coordinates[i*15+j][1] = -1;
+                }
+            }
+        }
 
+        for(int i = 6; i < 9 ;i++){
+            for (int j = 0; j < 15; j++){
+                coordinates[i*15+j][0] = (i+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+                coordinates[i*15+j][1] = (j+1)*SQUARE_SIZE - SQUARE_SIZE/2;
+            }
+        }
+        return coordinates;
+    }
 }
