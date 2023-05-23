@@ -1,5 +1,3 @@
-package Client;
-
 import java.awt.*;
 
 public class Pawn {
