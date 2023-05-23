@@ -1,5 +1,3 @@
-package Client;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -154,7 +152,7 @@ public class Board extends JPanel {
         else
             colorInt = 0;
         try {
-            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("../assets/" + colorInt + ".png")));
+            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/" + colorInt + ".png")));
             Image pawnIcon = icon.getImage();
             g2d.drawImage(pawnIcon, x, y, PAWN_SIZE, PAWN_SIZE, null);
         } catch (Exception e) {

@@ -1,4 +1,3 @@
-package Client;
 import javax.swing.JFrame;
 
 public class Main {
