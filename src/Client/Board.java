@@ -40,6 +40,7 @@ public class Board extends JPanel {
                 drawSquare(Color.WHITE,g2d,BIG_SQUARE_SIZE+SQUARE_SIZE*j,SQUARE_SIZE*i,SQUARE_SIZE);
             }
         }
+
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
     }
@@ -109,28 +110,68 @@ public class Board extends JPanel {
     }
 
     public Point[] generateBoardCoordinates() {
-        Point[] coordinates = new Point[15 * 15];
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
-                if(j == 6 || j == 7 || j == 8) {
-//                    coordinates[i*15+j][0] = (i+1)*SQUARE_SIZE - SQUARE_SIZE/2;
-//                    coordinates[i*15+j][1] = (j+1)*SQUARE_SIZE - SQUARE_SIZE/2;
-                    coordinates[i*15+j] = new Point((i+1)*SQUARE_SIZE - SQUARE_SIZE/2,(j+1)*SQUARE_SIZE - SQUARE_SIZE/2);
-                    coordinates[i*15+j].checkIfCorrect = true;
-//                    coordinates[i*15+j].checkIfCorrect = true;
-                }
-                else{
-                    coordinates[i*15+j] = new Point((i+1)*SQUARE_SIZE - SQUARE_SIZE/2,(j+1)*SQUARE_SIZE - SQUARE_SIZE/2);
-                }
-            }
-        }
-
-        for(int i = 6; i < 9 ;i++){
-            for (int j = 0; j < 15; j++){
-                coordinates[i*15+j] = new Point((i+1)*SQUARE_SIZE - SQUARE_SIZE/2,(j+1)*SQUARE_SIZE - SQUARE_SIZE/2);
-                coordinates[i*15+j].checkIfCorrect = true;
-            }
-        }
+        Point[] coordinates = new Point[56];
+        coordinates[0] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 1 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[1] = new Point(8 * SQUARE_SIZE - SQUARE_SIZE / 2, 1 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[2] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 1 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[3] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 2 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[4] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 3 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[5] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 4 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[6] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 5 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[7] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 6 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[8] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[9] = new Point(10 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[10] = new Point(11 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[11] = new Point(12 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[12] = new Point(13 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[13] = new Point(14 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[14] = new Point(15 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[15] = new Point(15 * SQUARE_SIZE - SQUARE_SIZE / 2, 8 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[16] = new Point(15 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[17] = new Point(14 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[18] = new Point(13 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[19] = new Point(12 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[20] = new Point(11 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[21] = new Point(10 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[22] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[23] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 10 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[24] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 11 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[25] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 12 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[26] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 13 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[27] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 14 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[28] = new Point(9 * SQUARE_SIZE - SQUARE_SIZE / 2, 15 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[29] = new Point(8 * SQUARE_SIZE - SQUARE_SIZE / 2, 15 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[30] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 15 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[31] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 14 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[32] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 13 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[33] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 12 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[34] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 11 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[35] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 10 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[36] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[37] = new Point(6 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[38] = new Point(5 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[39] = new Point(4 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[40] = new Point(3 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[41] = new Point(2 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[42] = new Point(1 * SQUARE_SIZE - SQUARE_SIZE / 2, 9 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[43] = new Point(1 * SQUARE_SIZE - SQUARE_SIZE / 2, 8 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[44] = new Point(1 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[45] = new Point(2 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[46] = new Point(3 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[47] = new Point(4 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[48] = new Point(5 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[49] = new Point(6 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[50] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 7 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[51] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 6 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[52] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 5 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[53] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 4 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[54] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 3 * SQUARE_SIZE - SQUARE_SIZE / 2);
+        coordinates[55] = new Point(7 * SQUARE_SIZE - SQUARE_SIZE / 2, 2 * SQUARE_SIZE - SQUARE_SIZE / 2);
         return coordinates;
     }
+
+
+
+
+
 }
