@@ -12,6 +12,7 @@ public class Board extends JPanel {
     public static final float STROKE_WIDTH = 2.0f;
     LinkedList<Pawn> pawns;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
+    LinkedList<Point> squares;
 
     public Board() {
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
@@ -24,6 +25,46 @@ public class Board extends JPanel {
         base.add(new Point(x3, y3));
         base.add(new Point(x4, y4));
         return base;
+    }
+    public void generateSquares(){
+        squares = new LinkedList<>();
+        for(int i=0;i<3;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*i + SQUARE_SIZE/2,SQUARE_SIZE/2));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2,SQUARE_SIZE+SQUARE_SIZE*i + SQUARE_SIZE/2));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*3 + SQUARE_SIZE*i + SQUARE_SIZE/2,SQUARE_SIZE*6 + SQUARE_SIZE/2));
+        }
+        for(int i=0;i<2;i++){
+        squares.add(new Point(2*BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE*i + SQUARE_SIZE/2 + SQUARE_SIZE));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(2*BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i,BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + 2*SQUARE_SIZE + SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE*3 + SQUARE_SIZE/2 +  SQUARE_SIZE*i));
+        }
+        for(int i=0;i<2;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i,2*BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE/2,2*BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE - SQUARE_SIZE/2 - SQUARE_SIZE*i,BIG_SQUARE_SIZE + 2*SQUARE_SIZE + SQUARE_SIZE/2));
+        }
+        for(int i=0;i<2;i++){
+            squares.add(new Point(SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i));
+        }
+        for(int i=0;i<6;i++){
+            squares.add(new Point(SQUARE_SIZE + SQUARE_SIZE/2 + SQUARE_SIZE*i,BIG_SQUARE_SIZE + SQUARE_SIZE/2));
+        }
+        for(int i=0;i<5;i++){
+            squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE/2,BIG_SQUARE_SIZE - SQUARE_SIZE/2 - SQUARE_SIZE*i));
+        }
+
     }
     public void initializeBases() {
         baseFields = new LinkedHashMap<>();
@@ -71,6 +112,12 @@ public class Board extends JPanel {
 
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
+
+        generateSquares();
+        g2d.setColor(Color.BLACK);
+        for (Point point : squares) {
+            g2d.fillRect(point.x, point.y, 25, 25);
+        }
 
         for(Pawn pawn : pawns) {
             drawPawn(g2d, pawn.getColor(), pawn.getLocation().x, pawn.getLocation().y);
