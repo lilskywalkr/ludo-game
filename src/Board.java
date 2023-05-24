@@ -5,11 +5,11 @@ import java.util.*;
 public class Board extends JPanel {
 
     public static final int SQUARE_SIZE = 50;
-    public static final int CIRCLE_SIZE = 50;
-    public static final int PAWN_SIZE = 30;
-    public static final int SPACE_BETWEEN_CIRCLE = 60;
-    public static final int BIG_SQUARE_SIZE = 300;
-    public static final float STROKE_WIDTH = 2.0f;
+    public static final int CIRCLE_SIZE = SQUARE_SIZE;
+    public static final int PAWN_SIZE = SQUARE_SIZE/2 + 5;
+    public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
+    public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
+    public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
     LinkedList<Pawn> pawns;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
     LinkedList<Point> squares;
@@ -68,7 +68,6 @@ public class Board extends JPanel {
     }
     public void initializeBases() {
         baseFields = new LinkedHashMap<>();
-        //BIG_SQUARE_SIZE/2-CIRCLE_SIZE/2
         baseFields.put(Color.RED, setBaseCordinates(75, 70, 195, 70, 75, 190, 195, 190));
         baseFields.put(Color.GREEN, setBaseCordinates(525, 70, 645, 70, 525, 190, 645, 190));
         baseFields.put(Color.YELLOW, setBaseCordinates(75, 520, 195, 520, 75, 640, 195, 640));
