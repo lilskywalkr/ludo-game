@@ -68,10 +68,22 @@ public class Board extends JPanel {
     }
     public void initializeBases() {
         baseFields = new LinkedHashMap<>();
-        baseFields.put(Color.RED, setBaseCordinates(75, 70, 195, 70, 75, 190, 195, 190));
-        baseFields.put(Color.GREEN, setBaseCordinates(525, 70, 645, 70, 525, 190, 645, 190));
-        baseFields.put(Color.YELLOW, setBaseCordinates(75, 520, 195, 520, 75, 640, 195, 640));
-        baseFields.put(Color.BLUE, setBaseCordinates(525, 520, 645, 520, 525, 640, 645, 640));
+        baseFields.put(Color.RED, setBaseCordinates(SQUARE_SIZE + SQUARE_SIZE/2, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
+                4*SQUARE_SIZE - SQUARE_SIZE/10, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
+                SQUARE_SIZE + SQUARE_SIZE/2, 4*SQUARE_SIZE - SQUARE_SIZE/5,
+                4*SQUARE_SIZE - SQUARE_SIZE/10, 4*SQUARE_SIZE - SQUARE_SIZE/5));
+        baseFields.put(Color.GREEN, setBaseCordinates(2*BIG_SQUARE_SIZE-3*SQUARE_SIZE/2, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
+                2*BIG_SQUARE_SIZE+SQUARE_SIZE-SQUARE_SIZE/10, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
+                2*BIG_SQUARE_SIZE-3*SQUARE_SIZE/2, 4*SQUARE_SIZE - SQUARE_SIZE/5,
+                2*BIG_SQUARE_SIZE+SQUARE_SIZE-SQUARE_SIZE/10, 4*SQUARE_SIZE - SQUARE_SIZE/5));
+        baseFields.put(Color.YELLOW, setBaseCordinates(SQUARE_SIZE + SQUARE_SIZE/2, BIG_SQUARE_SIZE+7*PAWN_SIZE + SQUARE_SIZE/5,
+                4*SQUARE_SIZE - SQUARE_SIZE/10, BIG_SQUARE_SIZE+7*PAWN_SIZE + SQUARE_SIZE/5,
+                SQUARE_SIZE + SQUARE_SIZE/2, 2*BIG_SQUARE_SIZE+SQUARE_SIZE-SQUARE_SIZE/5,
+                4*SQUARE_SIZE - SQUARE_SIZE/10, 2*BIG_SQUARE_SIZE+SQUARE_SIZE-SQUARE_SIZE/5));
+        baseFields.put(Color.BLUE, setBaseCordinates(BIG_SQUARE_SIZE*2 - 3*SQUARE_SIZE/2, BIG_SQUARE_SIZE*2 - 8*SQUARE_SIZE/5,
+                BIG_SQUARE_SIZE*2+SQUARE_SIZE*9/10, BIG_SQUARE_SIZE*2 - 8*SQUARE_SIZE/5,
+                BIG_SQUARE_SIZE*2 - 3*SQUARE_SIZE/2, BIG_SQUARE_SIZE*2+SQUARE_SIZE*4/5,
+                BIG_SQUARE_SIZE*2+SQUARE_SIZE*9/10, BIG_SQUARE_SIZE*2+SQUARE_SIZE*4/5));
         initializePawns();
     }
     public void initializePawns() {
