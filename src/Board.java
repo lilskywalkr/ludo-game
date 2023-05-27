@@ -10,13 +10,14 @@ public class Board extends JPanel {
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
-    LinkedList<Pawn> pawns;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
+    LinkedList<User> users;
     LinkedList<Point> squares;
 
     public Board() {
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
         initializeBases();
+        generateSquares();
     }
     public LinkedList<Point> setBaseCordinates (int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         LinkedList<Point> base = new LinkedList<>();
@@ -84,16 +85,14 @@ public class Board extends JPanel {
                 BIG_SQUARE_SIZE*2+SQUARE_SIZE*9/10, BIG_SQUARE_SIZE*2 - 8*SQUARE_SIZE/5,
                 BIG_SQUARE_SIZE*2 - 3*SQUARE_SIZE/2, BIG_SQUARE_SIZE*2+SQUARE_SIZE*4/5,
                 BIG_SQUARE_SIZE*2+SQUARE_SIZE*9/10, BIG_SQUARE_SIZE*2+SQUARE_SIZE*4/5));
-        initializePawns();
+        initializeUsers();
     }
-    public void initializePawns() {
-        pawns = new LinkedList<>();
+    public void initializeUsers() {
+        users = new LinkedList<>();
         for (Map.Entry<Color, LinkedList<Point>> entry : baseFields.entrySet()) {
-            Color color = entry.getKey();
-            LinkedList<Point> cords = entry.getValue();
-            for (Point p : cords) {
-                pawns.add(new Pawn(new Point(p.x, p.y), color));
-            }
+            users.add(
+                    new User(entry.getKey(), entry.getValue())
+            );
         }
     }
 
@@ -124,14 +123,15 @@ public class Board extends JPanel {
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
 
-        generateSquares();
-        g2d.setColor(Color.BLACK);
-        for (Point point : squares) {
-            g2d.fillRect(point.x, point.y, 25, 25);
-        }
+        drawPawns(g2d);
+    }
 
-        for(Pawn pawn : pawns) {
-            drawPawn(g2d, pawn.getColor(), pawn.getLocation().x, pawn.getLocation().y);
+    private void drawPawns(Graphics2D g2d) {
+        for (User user : users) {
+            LinkedList<Pawn> pawns = user.getPawns();
+            for(Pawn pawn : pawns) {
+                drawPawn(g2d, pawn.getColor(), pawn.getLocation().x, pawn.getLocation().y);
+            }
         }
     }
 
