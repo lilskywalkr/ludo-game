@@ -7,6 +7,7 @@ public class Board extends JPanel {
     public static final int SQUARE_SIZE = 50;
     public static final int CIRCLE_SIZE = SQUARE_SIZE;
     public static final int PAWN_SIZE = SQUARE_SIZE/2 + 5;
+    public static final int DICE_SIZE = SQUARE_SIZE * 3;
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
@@ -124,6 +125,7 @@ public class Board extends JPanel {
         g2d.setStroke(oldStroke);
 
         drawPawns(g2d);
+        //diceThrow(g2d);
     }
 
     private void drawPawns(Graphics2D g2d) {
@@ -213,6 +215,19 @@ public class Board extends JPanel {
             ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/" + colorInt + ".png")));
             Image pawnIcon = icon.getImage();
             g2d.drawImage(pawnIcon, x, y, PAWN_SIZE, PAWN_SIZE, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void diceThrow(Graphics2D g2d) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(6) + 1;
+
+        try {
+            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/kostka_" + randomNumber + ".png")));
+            Image diceIcon = icon.getImage();
+            g2d.drawImage(diceIcon, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, DICE_SIZE, DICE_SIZE, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
