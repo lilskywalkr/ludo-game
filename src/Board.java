@@ -11,6 +11,7 @@ public class Board extends JPanel {
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
+    public int random = 0;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
     LinkedList<User> users;
     LinkedList<Point> squares;
@@ -125,7 +126,6 @@ public class Board extends JPanel {
         g2d.setStroke(oldStroke);
 
         drawPawns(g2d);
-        //diceThrow(g2d);
     }
 
     private void drawPawns(Graphics2D g2d) {
@@ -220,17 +220,21 @@ public class Board extends JPanel {
         }
     }
 
-    private void diceThrow(Graphics2D g2d) {
+    private int randomNumberGenerate() {
         Random random = new Random();
-        int randomNumber = random.nextInt(6) + 1;
+
+        return random.nextInt(6) + 1;
+    }
+
+    private void diceThrow(Graphics2D g2d) {
+        this.random = this.randomNumberGenerate();
 
         try {
-            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/kostka_" + randomNumber + ".png")));
+            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/kostka_" + this.random + ".png")));
             Image diceIcon = icon.getImage();
             g2d.drawImage(diceIcon, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, DICE_SIZE, DICE_SIZE, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }
