@@ -15,6 +15,12 @@ public class Board extends JPanel implements MouseListener {
 
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
+    public static final int SHORT_HORIZONTAL_FIELDS = 3;
+    public static final int SHORT_VERTICAL_FIELDS = 3;
+    public static final int LONG_HORIZONTAL_FIELDS = 6;
+    public static final int LONG_VERTICAL_FIELDS = 6;
+    public static final int NUMBER_OF_FINAL_FIELDS = 5;
+
 
     private Color currentPlaterColor;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
@@ -29,15 +35,6 @@ public class Board extends JPanel implements MouseListener {
         addMouseListener(this);
     }
 
-
-
-
-
-
-
-
-
-
     public LinkedList<Point> setBaseCordinates (int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         LinkedList<Point> base = new LinkedList<>();
         base.add(new Point(x1, y1));
@@ -48,40 +45,40 @@ public class Board extends JPanel implements MouseListener {
     }
     public void generateSquares(){
         squares = new LinkedList<>();
-        for(int i=0;i<3;i++){
+        for(int i=0;i<SHORT_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*i + SQUARE_SIZE/2,SQUARE_SIZE/2));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_VERTICAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2,SQUARE_SIZE+SQUARE_SIZE*i + SQUARE_SIZE/2));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*3 + SQUARE_SIZE*i + SQUARE_SIZE/2,SQUARE_SIZE*6 + SQUARE_SIZE/2));
         }
-        for(int i=0;i<2;i++){
+        for(int i=0;i<SHORT_VERTICAL_FIELDS-1;i++){
         squares.add(new Point(2*BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE*i + SQUARE_SIZE/2 + SQUARE_SIZE));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(2*BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i,BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_VERTICAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + 2*SQUARE_SIZE + SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE*3 + SQUARE_SIZE/2 +  SQUARE_SIZE*i));
         }
-        for(int i=0;i<2;i++){
+        for(int i=0;i<SHORT_HORIZONTAL_FIELDS-1;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i,2*BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_VERTICAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE/2,2*BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE - SQUARE_SIZE/2 - SQUARE_SIZE*i,BIG_SQUARE_SIZE + 2*SQUARE_SIZE + SQUARE_SIZE/2));
         }
-        for(int i=0;i<2;i++){
+        for(int i=0;i<SHORT_VERTICAL_FIELDS-1;i++){
             squares.add(new Point(SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i));
         }
-        for(int i=0;i<6;i++){
+        for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(SQUARE_SIZE + SQUARE_SIZE/2 + SQUARE_SIZE*i,BIG_SQUARE_SIZE + SQUARE_SIZE/2));
         }
-        for(int i=0;i<5;i++){
+        for(int i=0;i<LONG_HORIZONTAL_FIELDS-1;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE/2,BIG_SQUARE_SIZE - SQUARE_SIZE/2 - SQUARE_SIZE*i));
         }
 
@@ -145,6 +142,7 @@ public class Board extends JPanel implements MouseListener {
 
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
+
         diceThrow(g2d);
         drawPawns(g2d);
     }
@@ -198,7 +196,7 @@ public class Board extends JPanel implements MouseListener {
 
 
             // rysowanie pól końcowych
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < NUMBER_OF_FINAL_FIELDS; i++) {
                 drawSquare(color,g2d,startX+i*moveX,startY+i*moveY,SQUARE_SIZE);
             }
 
