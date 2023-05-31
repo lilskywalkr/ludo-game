@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.*;
 
-public class Board extends JPanel {
+public class Board extends JPanel implements MouseListener {
 
     public static final int SQUARE_SIZE = 50;
     public static final int CIRCLE_SIZE = SQUARE_SIZE;
@@ -10,15 +12,29 @@ public class Board extends JPanel {
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
+
+    private Color currentPlaterColor;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
     LinkedList<User> users;
     LinkedList<Point> squares;
 
     public Board() {
+        currentPlaterColor = Color.RED;
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
         initializeBases();
         generateSquares();
+        addMouseListener(this);
     }
+
+
+
+
+
+
+
+
+
+
     public LinkedList<Point> setBaseCordinates (int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
         LinkedList<Point> base = new LinkedList<>();
         base.add(new Point(x1, y1));
@@ -67,6 +83,7 @@ public class Board extends JPanel {
         }
 
     }
+
     public void initializeBases() {
         baseFields = new LinkedHashMap<>();
         baseFields.put(Color.RED, setBaseCordinates(SQUARE_SIZE + SQUARE_SIZE/2, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
@@ -98,6 +115,9 @@ public class Board extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+
+        System.out.println("Aktualny kolor: "+ getColorName(currentPlaterColor) );
+
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         Stroke oldStroke = g2d.getStroke();
@@ -218,4 +238,65 @@ public class Board extends JPanel {
         }
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Point point = e.getPoint();
+        Pawn pawn;
+        for (User user : users) {
+            if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlaterColor))
+            {
+                System.out.println("Wybrałeś pionek: " + pawn.getLocation());
+                currentPlaterColor = getNextColor(user.getColor());
+                System.out.println("Aktualny kolor: "+ getColorName(currentPlaterColor) );
+                return;
+            }
+        }
+        System.out.println("Nie trafiłeś w odpowiedni pionek "+point);
+    }
+
+    private Color getNextColor(Color color)
+    {
+        if (color.equals(Color.RED)) {
+            return Color.GREEN;
+        }
+        else if( color.equals(Color.GREEN))
+            return Color.YELLOW;
+        else if(color.equals(Color.YELLOW))
+            return Color.BLUE;
+        else
+            return Color.RED;
+    }
+
+    private String getColorName (Color color)
+    {
+        if (color.equals(Color.RED)) {
+            return "RED";
+        }
+        else if( color.equals(Color.GREEN))
+            return "GREEN";
+        else if(color.equals(Color.YELLOW))
+            return "YELLOW";
+        else
+            return "BLUE";
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
