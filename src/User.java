@@ -49,43 +49,32 @@ public class User {
     {
         return point.x <= pawn.getLocation().x + PAWN_WIDTH && point.x >= pawn.getLocation().x  && point.y <=pawn.getLocation().y + PAWN_HEIGHT && point.y >= pawn.getLocation().y;
     }
-    public void initializeStartFields(LinkedList<Point> squares) {
+    public void initializeFields(LinkedList<Point> squares) {
         startFields = new LinkedList<>();
+        endFields = new LinkedList<>();
         if (color.equals(Color.GREEN)) {
             Point square = squares.get(START_GREEN_FIELD);
             startFields.add(square);
+            square = squares.get(END_GREEN_FIELD);
+            endFields.add(square);
         }
         else if (color.equals(Color.BLUE)) {
             Point square = squares.get(START_BLUE_FIELD);
             startFields.add(square);
+            square = squares.get(END_BLUE_FIELD);
+            endFields.add(square);
         }
         else if (color.equals(Color.YELLOW)) {
             Point square = squares.get(START_YELLOW_FIELD);
             startFields.add(square);
+            square = squares.get(END_YELLOW_FIELD);
+            endFields.add(square);
         }
         else if(color.equals(Color.RED)){
             Point square = squares.get(START_RED_FIELD);
             startFields.add(square);
-        }
-    }
-    public void initializeEndFields(LinkedList<Point> squares) {
-        endFields = new LinkedList<>();
-        if (color.equals(Color.GREEN)) {
-            Point square = squares.get(END_GREEN_FIELD);
-            endFields.add(square);
-        }
-        else if (color.equals(Color.BLUE)) {
-            Point square = squares.get(END_BLUE_FIELD);
-            endFields.add(square);
-        }
-        else if (color.equals(Color.YELLOW)) {
-            Point square = squares.get(END_YELLOW_FIELD);
-            endFields.add(square);
-        }
-        else if(color.equals(Color.RED)){
-            Point square = squares.get(END_RED_FIELD);
+            square = squares.get(END_RED_FIELD);
             endFields.add(square);
         }
     }
-
 }
