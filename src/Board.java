@@ -9,9 +9,9 @@ public class Board extends JPanel implements MouseListener {
     public static final int SQUARE_SIZE = 50;
     public static final int CIRCLE_SIZE = SQUARE_SIZE;
     public static final int PAWN_SIZE = SQUARE_SIZE/2 + 5;
-    public static final int DICE_SIZE = SQUARE_SIZE * 3;
+    public static final int DICE_SIZE = SQUARE_SIZE;
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
-    public int random = 0;
+    public int random = this.randomNumberGenerate();
 
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
@@ -248,12 +248,10 @@ public class Board extends JPanel implements MouseListener {
     }
 
     private void diceThrow(Graphics2D g2d) {
-        this.random = this.randomNumberGenerate();
-
         try {
             ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/kostka_" + this.random + ".png")));
             Image diceIcon = icon.getImage();
-            g2d.drawImage(diceIcon, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, DICE_SIZE, DICE_SIZE, null);
+            g2d.drawImage(diceIcon, BIG_SQUARE_SIZE + DICE_SIZE, BIG_SQUARE_SIZE + DICE_SIZE, DICE_SIZE, DICE_SIZE, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
