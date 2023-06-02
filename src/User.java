@@ -2,13 +2,10 @@ import java.awt.*;
 import java.util.LinkedList;
 
 public class User {
-
-    public static final int PAWN_WIDTH = 36;
-    public static final int PAWN_HEIGHT = 50;
-    public static final int START_GREEN_FIELD = 3;
-    public static final int START_BLUE_FIELD = 17;
-    public static final int START_YELLOW_FIELD = 31;
-    public static final int START_RED_FIELD = 45;
+    public static final int START_GREEN_FIELD = 2;
+    public static final int START_BLUE_FIELD = 16;
+    public static final int START_YELLOW_FIELD = 30;
+    public static final int START_RED_FIELD = 44;
     public static final int END_GREEN_FIELD = 1;
     public static final int END_BLUE_FIELD = 15;
     public static final int END_YELLOW_FIELD = 29;
@@ -17,9 +14,10 @@ public class User {
     private final Color color;
     private LinkedList<Point> startFields;
     private LinkedList<Point> endFields;
-    public User(Color color, LinkedList<Point> baseFields) {
+    public User(Color color, LinkedList<Point> baseFields, LinkedList<Point> squares) {
         this.color = color;
-        initializePawns(baseFields);
+        initializePawnsAndBasefields(baseFields);
+        initializeFields(squares);
     }
 
     public Color getColor() {
@@ -29,10 +27,10 @@ public class User {
     public LinkedList<Pawn> getPawns() {
         return pawns;
     }
-    public void initializePawns(LinkedList<Point> baseFields) {
+    public void initializePawnsAndBasefields(LinkedList<Point> baseFields) {
         pawns = new LinkedList<>();
         for (Point p : baseFields) {
-            pawns.add(new Pawn(new Point(p.x, p.y), color));
+            pawns.add(new Pawn(new Point(p), color));
         }
     }
 
@@ -44,10 +42,8 @@ public class User {
         }
         return null;
     }
-
-    private boolean isCursorInBoundries(Pawn pawn,Point point)
-    {
-        return point.x <= pawn.getLocation().x + PAWN_WIDTH && point.x >= pawn.getLocation().x  && point.y <=pawn.getLocation().y + PAWN_HEIGHT && point.y >= pawn.getLocation().y;
+    public static boolean isCursorInBoundries(Pawn pawn,Point point) {
+        return point.x <= pawn.getLocation().x + Pawn.PAWN_WIDTH && point.x >= pawn.getLocation().x  && point.y <=pawn.getLocation().y + Pawn.PAWN_HEIGHT && point.y >= pawn.getLocation().y;
     }
     public void initializeFields(LinkedList<Point> squares) {
         startFields = new LinkedList<>();
@@ -76,5 +72,9 @@ public class User {
             square = squares.get(END_RED_FIELD);
             endFields.add(square);
         }
+    }
+
+    public void moveOutOfBase(Pawn pawn) {
+        pawn.setLocation(Pawn.setPawnPrintingValues(startFields.get(0)));
     }
 }

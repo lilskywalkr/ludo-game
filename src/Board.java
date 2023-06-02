@@ -8,11 +8,11 @@ public class Board extends JPanel implements MouseListener {
 
     public static final int SQUARE_SIZE = 50;
     public static final int CIRCLE_SIZE = SQUARE_SIZE;
-    public static final int PAWN_SIZE = SQUARE_SIZE/2 + 5;
+    public static final int PAWN_SIZE = SQUARE_SIZE/2 + SQUARE_SIZE/10;
     public static final int DICE_SIZE = SQUARE_SIZE;
-    public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + 10;
-    public int random = this.randomNumberGenerate();
-
+    public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + SQUARE_SIZE/5;
+    public static final int ROLLING_OFFSET = 1;
+    public int diceValue = this.randomNumberGenerate();
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
     public static final int SHORT_HORIZONTAL_FIELDS = 3;
@@ -21,17 +21,17 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
 
-
-    private Color currentPlaterColor;
+    public static final int MAXIMUM_ROLLED_VALUE = 6;
+    private Color currentPlayerColor;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
     LinkedList<User> users;
     LinkedList<Point> squares;
 
     public Board() {
-        currentPlaterColor = Color.RED;
+        currentPlayerColor = Color.RED;
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
-        initializeBases();
         generateSquares();
+        initializeBases();
         addMouseListener(this);
     }
 
@@ -54,7 +54,7 @@ public class Board extends JPanel implements MouseListener {
         for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE*3 + SQUARE_SIZE*i + SQUARE_SIZE/2,SQUARE_SIZE*6 + SQUARE_SIZE/2));
         }
-        for(int i=0;i<SHORT_VERTICAL_FIELDS-1;i++){
+        for(int i = 0; i<SHORT_VERTICAL_FIELDS- 1; i++){
         squares.add(new Point(2*BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE*i + SQUARE_SIZE/2 + SQUARE_SIZE));
         }
         for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
@@ -63,7 +63,7 @@ public class Board extends JPanel implements MouseListener {
         for(int i=0;i<LONG_VERTICAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE + 2*SQUARE_SIZE + SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE*3 + SQUARE_SIZE/2 +  SQUARE_SIZE*i));
         }
-        for(int i=0;i<SHORT_HORIZONTAL_FIELDS-1;i++){
+        for(int i = 0; i<SHORT_HORIZONTAL_FIELDS- 1; i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i,2*BIG_SQUARE_SIZE + SQUARE_SIZE*2 + SQUARE_SIZE/2));
         }
         for(int i=0;i<LONG_VERTICAL_FIELDS;i++){
@@ -72,13 +72,13 @@ public class Board extends JPanel implements MouseListener {
         for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(BIG_SQUARE_SIZE - SQUARE_SIZE/2 - SQUARE_SIZE*i,BIG_SQUARE_SIZE + 2*SQUARE_SIZE + SQUARE_SIZE/2));
         }
-        for(int i=0;i<SHORT_VERTICAL_FIELDS-1;i++){
+        for(int i = 0; i<SHORT_VERTICAL_FIELDS- 1; i++){
             squares.add(new Point(SQUARE_SIZE/2,BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE*i));
         }
         for(int i=0;i<LONG_HORIZONTAL_FIELDS;i++){
             squares.add(new Point(SQUARE_SIZE + SQUARE_SIZE/2 + SQUARE_SIZE*i,BIG_SQUARE_SIZE + SQUARE_SIZE/2));
         }
-        for(int i=0;i<LONG_HORIZONTAL_FIELDS-1;i++){
+        for(int i = 0; i<LONG_HORIZONTAL_FIELDS- 1; i++){
             squares.add(new Point(BIG_SQUARE_SIZE + SQUARE_SIZE/2,BIG_SQUARE_SIZE - SQUARE_SIZE/2 - SQUARE_SIZE*i));
         }
 
@@ -108,7 +108,7 @@ public class Board extends JPanel implements MouseListener {
         users = new LinkedList<>();
         for (Map.Entry<Color, LinkedList<Point>> entry : baseFields.entrySet()) {
             users.add(
-                    new User(entry.getKey(), entry.getValue())
+                    new User(entry.getKey(), entry.getValue(), squares)
             );
         }
     }
@@ -116,7 +116,7 @@ public class Board extends JPanel implements MouseListener {
     @Override
     protected void paintComponent(Graphics g) {
 
-        System.out.println("Aktualny kolor: "+ getColorName(currentPlaterColor) );
+        System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
 
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
@@ -156,8 +156,7 @@ public class Board extends JPanel implements MouseListener {
         }
     }
 
-    private void drawColorPart(Graphics2D g2d)
-    {
+    private void drawColorPart(Graphics2D g2d) {
         Color[] colors = {Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW};
         int startX,startY,moveX,moveY,centerOfBigSquareX,centerOfBigSquareY;
 
@@ -211,8 +210,7 @@ public class Board extends JPanel implements MouseListener {
 
     }
 
-    private void drawSquare(Color color,Graphics2D g2d,int x,int y,int size)
-    {
+    private void drawSquare(Color color,Graphics2D g2d,int x,int y,int size) {
         g2d.setStroke(new BasicStroke(STROKE_WIDTH));
         g2d.setColor(color);
         g2d.fillRect(x,y, size, size);
@@ -241,13 +239,12 @@ public class Board extends JPanel implements MouseListener {
 
     private int randomNumberGenerate() {
         Random random = new Random();
-
-        return random.nextInt(6) + 1;
+        return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
     }
 
     private void diceThrow(Graphics2D g2d) {
         try {
-            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/kostka_" + this.random + ".png")));
+            ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/kostka_" + this.diceValue + ".png")));
             Image diceIcon = icon.getImage();
             g2d.drawImage(diceIcon, BIG_SQUARE_SIZE + DICE_SIZE, BIG_SQUARE_SIZE + DICE_SIZE, DICE_SIZE, DICE_SIZE, null);
         } catch (Exception e) {
@@ -261,26 +258,58 @@ public class Board extends JPanel implements MouseListener {
         Point point = e.getPoint();
         Pawn pawn;
         for (User user : users) {
-            if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlaterColor))
-            {
-                System.out.println("Wybrałeś pionek: " + pawn.getLocation());
-                currentPlaterColor = getNextColor(user.getColor());
-                System.out.println("Aktualny kolor: "+ getColorName(currentPlaterColor) );
+            if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
+                movePawn(pawn, user);
+                if(diceValue != 6)
+                    currentPlayerColor = getNextColor(user.getColor());
+                diceValue = randomNumberGenerate();
+                repaint();
                 return;
             }
         }
-        System.out.println("Nie trafiłeś w odpowiedni pionek "+point);
+        repaint();
+    }
+
+    private boolean isClickedPawnInBase(Pawn pawn) {
+        LinkedList<Point> basefieldsPoints = baseFields.get(currentPlayerColor);
+        for (Point p : basefieldsPoints) {
+            if(User.isCursorInBoundries(pawn,p))
+                return true;
+        }
+        return false;
+    }
+
+    public void movePawn(Pawn pawn, User currentUser) {
+        if(isClickedPawnInBase(pawn) && diceValue == 6)
+            currentUser.moveOutOfBase(pawn);
+        else if(!isClickedPawnInBase(pawn)) {
+            pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
+        }
+    }
+
+    private int getSquareId(Pawn pawn) {
+        int i = 0;
+        for (Point square : squares) {
+            if(isPawnInSquare(square, pawn))
+                break;
+            ++i;
+        }
+        return i;
+    }
+
+    private boolean isPawnInSquare(Point square, Pawn pawn) {
+        return square.x - SQUARE_SIZE/2 <= pawn.getLocation().x && square.x + SQUARE_SIZE/2 >= pawn.getLocation().x
+                && square.y - SQUARE_SIZE/2 <= pawn.getLocation().y && square.y + SQUARE_SIZE/2 >= pawn.getLocation().y;
     }
 
     private Color getNextColor(Color color)
     {
-        if (color.equals(Color.RED)) {
+        if (color.equals(Color.RED))
             return Color.GREEN;
-        }
         else if( color.equals(Color.GREEN))
-            return Color.YELLOW;
-        else if(color.equals(Color.YELLOW))
             return Color.BLUE;
+        else if(color.equals(Color.BLUE))
+            return Color.YELLOW;
         else
             return Color.RED;
     }
@@ -297,6 +326,8 @@ public class Board extends JPanel implements MouseListener {
         else
             return "BLUE";
     }
+
+
 
     @Override
     public void mousePressed(MouseEvent e) {
