@@ -23,8 +23,6 @@ public class Board extends JPanel implements MouseListener {
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
 
     public static final int MAXIMUM_ROLLED_VALUE = 6;
-
-
     private Color currentPlayerColor;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
     LinkedList<User> users;
@@ -33,8 +31,8 @@ public class Board extends JPanel implements MouseListener {
     public Board() {
         currentPlayerColor = Color.RED;
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
-        initializeBases();
         generateSquares();
+        initializeBases();
         addMouseListener(this);
     }
 
@@ -111,7 +109,7 @@ public class Board extends JPanel implements MouseListener {
         users = new LinkedList<>();
         for (Map.Entry<Color, LinkedList<Point>> entry : baseFields.entrySet()) {
             users.add(
-                    new User(entry.getKey(), entry.getValue())
+                    new User(entry.getKey(), entry.getValue(), squares)
             );
         }
     }
@@ -267,6 +265,7 @@ public class Board extends JPanel implements MouseListener {
                 System.out.println("Wybrałeś pionek: " + pawn.getLocation());
                 currentPlayerColor = getNextColor(user.getColor());
                 System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
+                System.out.println(user.isClickedPawnInBase(pawn));
                 diceValue = randomNumberGenerate();
                 System.out.println(diceValue);
                 repaint();
@@ -301,6 +300,8 @@ public class Board extends JPanel implements MouseListener {
         else
             return "BLUE";
     }
+
+
 
     @Override
     public void mousePressed(MouseEvent e) {

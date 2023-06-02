@@ -2,7 +2,6 @@ import java.awt.*;
 import java.util.LinkedList;
 
 public class User {
-
     public static final int PAWN_WIDTH = 36;
     public static final int PAWN_HEIGHT = 50;
     public static final int START_GREEN_FIELD = 3;
@@ -17,9 +16,11 @@ public class User {
     private final Color color;
     private LinkedList<Point> startFields;
     private LinkedList<Point> endFields;
-    public User(Color color, LinkedList<Point> baseFields) {
+    private LinkedList<Point> basefieldsPoints;
+    public User(Color color, LinkedList<Point> baseFields, LinkedList<Point> squares) {
         this.color = color;
-        initializePawns(baseFields);
+        initializePawnsAndBasefields(baseFields);
+        initializeFields(squares);
     }
 
     public Color getColor() {
@@ -29,10 +30,12 @@ public class User {
     public LinkedList<Pawn> getPawns() {
         return pawns;
     }
-    public void initializePawns(LinkedList<Point> baseFields) {
+    public void initializePawnsAndBasefields(LinkedList<Point> baseFields) {
         pawns = new LinkedList<>();
+        basefieldsPoints = new LinkedList<>();
         for (Point p : baseFields) {
-            pawns.add(new Pawn(new Point(p.x, p.y), color));
+            basefieldsPoints.add(new Point(p));
+            pawns.add(new Pawn(new Point(p), color));
         }
     }
 
@@ -45,8 +48,7 @@ public class User {
         return null;
     }
 
-    private boolean isCursorInBoundries(Pawn pawn,Point point)
-    {
+    private boolean isCursorInBoundries(Pawn pawn,Point point) {
         return point.x <= pawn.getLocation().x + PAWN_WIDTH && point.x >= pawn.getLocation().x  && point.y <=pawn.getLocation().y + PAWN_HEIGHT && point.y >= pawn.getLocation().y;
     }
     public void initializeFields(LinkedList<Point> squares) {
@@ -77,4 +79,16 @@ public class User {
             endFields.add(square);
         }
     }
+
+
+
+    public boolean isClickedPawnInBase(Pawn pawn) {
+        for (Point p : basefieldsPoints) {
+            if(isCursorInBoundries(pawn,p))
+                return true;
+        }
+        return false;
+    }
+
+
 }
