@@ -260,9 +260,9 @@ public class Board extends JPanel implements MouseListener {
         for (User user : users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
                 movePawn(pawn, user);
-                currentPlayerColor = getNextColor(user.getColor());
+                if(diceValue != 6)
+                    currentPlayerColor = getNextColor(user.getColor());
                 diceValue = randomNumberGenerate();
-                System.out.println(diceValue);
                 repaint();
                 return;
             }
