@@ -13,7 +13,6 @@ public class Board extends JPanel implements MouseListener {
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + SQUARE_SIZE/5;
     public static final int ROLLING_OFFSET = 1;
     public int diceValue = this.randomNumberGenerate();
-
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
     public static final int SHORT_HORIZONTAL_FIELDS = 3;
@@ -157,8 +156,7 @@ public class Board extends JPanel implements MouseListener {
         }
     }
 
-    private void drawColorPart(Graphics2D g2d)
-    {
+    private void drawColorPart(Graphics2D g2d) {
         Color[] colors = {Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW};
         int startX,startY,moveX,moveY,centerOfBigSquareX,centerOfBigSquareY;
 
@@ -212,8 +210,7 @@ public class Board extends JPanel implements MouseListener {
 
     }
 
-    private void drawSquare(Color color,Graphics2D g2d,int x,int y,int size)
-    {
+    private void drawSquare(Color color,Graphics2D g2d,int x,int y,int size) {
         g2d.setStroke(new BasicStroke(STROKE_WIDTH));
         g2d.setColor(color);
         g2d.fillRect(x,y, size, size);
@@ -262,18 +259,47 @@ public class Board extends JPanel implements MouseListener {
         Pawn pawn;
         for (User user : users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
-                System.out.println("Wybrałeś pionek: " + pawn.getLocation());
+                movePawn(pawn, user);
                 currentPlayerColor = getNextColor(user.getColor());
-                System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
-                System.out.println(user.isClickedPawnInBase(pawn));
                 diceValue = randomNumberGenerate();
                 System.out.println(diceValue);
                 repaint();
                 return;
             }
         }
-        System.out.println("Nie trafiłeś w odpowiedni pionek "+point);
         repaint();
+    }
+
+    private boolean isClickedPawnInBase(Pawn pawn) {
+        LinkedList<Point> basefieldsPoints = baseFields.get(currentPlayerColor);
+        for (Point p : basefieldsPoints) {
+            if(User.isCursorInBoundries(pawn,p))
+                return true;
+        }
+        return false;
+    }
+
+    public void movePawn(Pawn pawn, User currentUser) {
+        if(isClickedPawnInBase(pawn) && diceValue == 6)
+            currentUser.moveOutOfBase(pawn);
+        else if(!isClickedPawnInBase(pawn)) {
+            pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
+        }
+    }
+
+    private int getSquareId(Pawn pawn) {
+        int i = 0;
+        for (Point square : squares) {
+            if(isPawnInSquare(square, pawn))
+                break;
+            ++i;
+        }
+        return i;
+    }
+
+    private boolean isPawnInSquare(Point square, Pawn pawn) {
+        return square.x - SQUARE_SIZE/2 <= pawn.getLocation().x && square.x + SQUARE_SIZE/2 >= pawn.getLocation().x
+                && square.y - SQUARE_SIZE/2 <= pawn.getLocation().y && square.y + SQUARE_SIZE/2 >= pawn.getLocation().y;
     }
 
     private Color getNextColor(Color color)
