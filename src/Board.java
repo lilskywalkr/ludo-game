@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 public class Board extends JPanel implements MouseListener {
 
@@ -20,6 +23,7 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_HORIZONTAL_FIELDS = 6;
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
+    public boolean isDiceRolled = true;
 
     public static final int MAXIMUM_ROLLED_VALUE = 6;
     private Color currentPlayerColor;
@@ -143,8 +147,31 @@ public class Board extends JPanel implements MouseListener {
         drawColorPart(g2d);
         g2d.setStroke(oldStroke);
 
-        diceThrow(g2d);
+        diceButton(g2d, 50 * 7, 50 * 8, 50, 50);
         drawPawns(g2d);
+        diceThrow(g2d);
+    }
+    
+    private void diceButton(Graphics2D g2d, int x, int y, int width, int height) {
+        Color backgroundColor = Color.WHITE;
+        String text = "Roll!";
+
+        g2d.setColor(backgroundColor);
+        g2d.fillRect(x, y, width, height);
+
+        Font font = new Font("Arial", Font.BOLD, 16);
+        Color textColor = Color.BLACK;
+        g2d.setFont(font);
+        g2d.setColor(textColor);
+
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int textHeight = fm.getHeight();
+        int textX = x + (width - textWidth) / 2;
+        int textY = y + (height - textHeight) / 2 + fm.getAscent();
+
+        g2d.drawString(text, textX, textY);
+        g2d.drawRect(x, y, width, height);
     }
 
     private void drawPawns(Graphics2D g2d) {
@@ -252,22 +279,37 @@ public class Board extends JPanel implements MouseListener {
         }
     }
 
-
     @Override
     public void mouseClicked(MouseEvent e) {
         Point point = e.getPoint();
         Pawn pawn;
+        int rectX = 50 * 7;
+        int rectY = 50 * 8;
+        int rectWidth = 50;
+        int rectHeight = 50;
+
         for (User user : users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
                 movePawn(pawn, user);
-                if(diceValue != 6)
+                if(diceValue != 6) {
                     currentPlayerColor = getNextColor(user.getColor());
-                diceValue = randomNumberGenerate();
+                }
+                //diceValue = randomNumberGenerate();
+                isDiceRolled = false;
                 repaint();
                 return;
             }
         }
-        repaint();
+
+        if (!isDiceRolled) {
+            if (point.x >= rectX && point.x <= rectX + rectWidth && point.y >= rectY && point.y <= rectY + rectHeight) {
+                diceValue = randomNumberGenerate();
+                repaint();
+                isDiceRolled = true;
+            } else {
+                repaint();
+            }
+        }
     }
 
     private boolean isClickedPawnInBase(Pawn pawn) {
