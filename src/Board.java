@@ -312,6 +312,18 @@ public class Board extends JPanel implements MouseListener {
         }
     }
 
+    private boolean areUsersPawnsInBase(User user) {
+        LinkedList<Pawn> pawns = user.getPawns();
+        LinkedList<Point> basefieldsPoints = baseFields.get(user.getColor());
+        for (int i = 0; i < 4; i++) {
+            if (!pawns.get(i).getLocation().equals(basefieldsPoints.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private boolean isClickedPawnInBase(Pawn pawn) {
         LinkedList<Point> basefieldsPoints = baseFields.get(currentPlayerColor);
         for (Point p : basefieldsPoints) {
