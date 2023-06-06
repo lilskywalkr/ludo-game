@@ -15,6 +15,8 @@ public class Board extends JPanel implements MouseListener {
     public static final int DICE_SIZE = SQUARE_SIZE;
     public static final int SPACE_BETWEEN_CIRCLE = SQUARE_SIZE + SQUARE_SIZE/5;
     public static final int ROLLING_OFFSET = 1;
+    public static final int BUTTON_X_POSITION = 7;
+    public static final int BUTTON_Y_POSITION = 8;
     public int diceValue = this.randomNumberGenerate();
     public static final int BIG_SQUARE_SIZE = 6*SQUARE_SIZE;
     public static final float STROKE_WIDTH = (float)SQUARE_SIZE/25;
@@ -283,33 +285,44 @@ public class Board extends JPanel implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         Point point = e.getPoint();
         Pawn pawn;
-        int rectX = 50 * 7;
-        int rectY = 50 * 8;
-        int rectWidth = 50;
-        int rectHeight = 50;
+        int rectX = SQUARE_SIZE * BUTTON_X_POSITION;
+        int rectY = SQUARE_SIZE * BUTTON_Y_POSITION;
+        int rectWidth = SQUARE_SIZE;
+        int rectHeight = SQUARE_SIZE;
+
 
         for (User user : users) {
-            if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
-                movePawn(pawn, user);
-                if(diceValue != 6) {
-                    currentPlayerColor = getNextColor(user.getColor());
+            if(isDiceRolled) {
+                if ((pawn = user.getPawn(point)) != null && user.getColor().equals(currentPlayerColor)) {
+                    movePawn(pawn, user);
+                    if (diceValue != 6) {
+                        currentPlayerColor = getNextColor(user.getColor());
+                    }
+                    //diceValue = randomNumberGenerate();
+                    isDiceRolled = false;
+                    repaint();
+                    return;
                 }
-                //diceValue = randomNumberGenerate();
-                isDiceRolled = false;
-                repaint();
-                return;
+            }
+            else {
+                if (point.x >= rectX && point.x <= rectX + rectWidth && point.y >= rectY && point.y <= rectY + rectHeight) {
+                    diceValue = randomNumberGenerate();
+                    repaint();
+                    isDiceRolled = true;
+                } else {
+                    repaint();
+                }
             }
         }
+    }
 
-        if (!isDiceRolled) {
-            if (point.x >= rectX && point.x <= rectX + rectWidth && point.y >= rectY && point.y <= rectY + rectHeight) {
-                diceValue = randomNumberGenerate();
-                repaint();
-                isDiceRolled = true;
-            } else {
-                repaint();
-            }
+    private boolean arePawnInBase(User user) {
+        LinkedList<Point> basefieldsPoints = baseFields.get(currentPlayerColor);
+        LinkedList<Pawn> pawns = user.getPawns();
+        for (Point p : basefieldsPoints) {
+            p.equals()
         }
+        return false;
     }
 
     private boolean isClickedPawnInBase(Pawn pawn) {
