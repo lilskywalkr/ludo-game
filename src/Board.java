@@ -262,7 +262,8 @@ public class Board extends JPanel implements MouseListener {
                 movePawn(pawn, user);
                 if(diceValue != 6)
                     currentPlayerColor = getNextColor(user.getColor());
-                diceValue = randomNumberGenerate();
+//                diceValue = randomNumberGenerate();
+                diceValue = 6;
                 repaint();
                 return;
             }
@@ -283,7 +284,10 @@ public class Board extends JPanel implements MouseListener {
         if(isClickedPawnInBase(pawn) && diceValue == 6)
             currentUser.moveOutOfBase(pawn);
         else if(!isClickedPawnInBase(pawn)) {
-            pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
+            int squareID = getSquareId(pawn) + diceValue;
+            if(squareID >= squares.size())
+                squareID -= squares.size();
+            pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(squareID)));
         }
     }
 
