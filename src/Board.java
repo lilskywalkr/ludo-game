@@ -27,6 +27,7 @@ public class Board extends JPanel implements MouseListener {
     LinkedList<User> users;
     LinkedList<Point> squares;
 
+
     public Board() {
         currentPlayerColor = Color.RED;
         setPreferredSize(new Dimension(BIG_SQUARE_SIZE*2+3*SQUARE_SIZE, BIG_SQUARE_SIZE*2+3*SQUARE_SIZE));
@@ -239,6 +240,7 @@ public class Board extends JPanel implements MouseListener {
 
     private int randomNumberGenerate() {
         Random random = new Random();
+
         return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
     }
 
@@ -279,10 +281,38 @@ public class Board extends JPanel implements MouseListener {
         return false;
     }
 
+    private Pawn getPawnFromNextSquare(Pawn pawn,int step)
+    {
+        int counter = 0;
+        int currentPosition = getSquareId(pawn);
+        for (Color color : baseFields.keySet()) {
+            if(!color.equals(pawn.getColor()) && users.get(counter).getColor().equals(color))
+            {
+                for (Pawn enemyPawn : users.get(counter).getPawns()) {
+                    if (getSquareId(enemyPawn) == currentPosition + step)
+                        return enemyPawn;
+                }
+            }
+            counter++;
+        }
+
+        return null;
+    }
+    private void checkNextSquare(Pawn pawn,int step)
+    {
+        Pawn enemyPawn = getPawnFromNextSquare(pawn,step);
+        if(enemyPawn !=null)
+        {
+            enemyPawn.setLocation(baseFields.get(enemyPawn.getColor()).get(enemyPawn.getPawnID()));
+        }
+
+    }
+
     public void movePawn(Pawn pawn, User currentUser) {
         if(isClickedPawnInBase(pawn) && diceValue == 6)
             currentUser.moveOutOfBase(pawn);
         else if(!isClickedPawnInBase(pawn)) {
+            checkNextSquare(pawn,diceValue);
             pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
         }
     }

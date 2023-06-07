@@ -29,8 +29,8 @@ public class User {
     }
     public void initializePawnsAndBasefields(LinkedList<Point> baseFields) {
         pawns = new LinkedList<>();
-        for (Point p : baseFields) {
-            pawns.add(new Pawn(new Point(p), color));
+        for (int i = 0; i < baseFields.size(); i++) {
+            pawns.add(new Pawn(new Point(baseFields.get(i)), color,i));
         }
     }
 
