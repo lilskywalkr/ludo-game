@@ -3,8 +3,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 public class Board extends JPanel implements MouseListener {
@@ -148,6 +146,7 @@ public class Board extends JPanel implements MouseListener {
         g2d.setStroke(oldStroke);
 
         diceButton(g2d, 50 * 7, 50 * 8, 50, 50);
+        drawRoundThingy(g2d, currentPlayerColor);
         drawPawns(g2d);
         diceThrow(g2d);
     }
@@ -288,27 +287,33 @@ public class Board extends JPanel implements MouseListener {
         int rectWidth = 50;
         int rectHeight = 50;
 
-        for (User user : users) {
+       for (User user: users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
                 movePawn(pawn, user);
-                if(diceValue != 6) {
+                if(diceValue == 6) {
+                    isDiceRolled = true;
+                }
+
+                if (!isDiceRolled) {
                     currentPlayerColor = getNextColor(user.getColor());
                 }
                 //diceValue = randomNumberGenerate();
-                isDiceRolled = false;
                 repaint();
                 return;
             }
         }
 
-        if (!isDiceRolled) {
-            if (point.x >= rectX && point.x <= rectX + rectWidth && point.y >= rectY && point.y <= rectY + rectHeight) {
-                diceValue = randomNumberGenerate();
-                repaint();
-                isDiceRolled = true;
-            } else {
-                repaint();
+        if (point.x >= rectX && point.x <= rectX + rectWidth && point.y >= rectY && point.y <= rectY + rectHeight) {
+            if (diceValue != 6) {
+                isDiceRolled = false;
+                currentPlayerColor = getNextColor(currentPlayerColor);
             }
+
+            diceValue = randomNumberGenerate();
+            repaint();
+            isDiceRolled = true;
+        } else {
+            repaint();
         }
     }
 
@@ -322,6 +327,27 @@ public class Board extends JPanel implements MouseListener {
         }
 
         return true;
+    }
+
+    private void drawRoundThingy(Graphics2D g2d, Color color) {
+        String text = getColorName(color);
+
+        g2d.setColor(color);
+        g2d.fillRect(BIG_SQUARE_SIZE + SQUARE_SIZE + 12, BIG_SQUARE_SIZE + (SQUARE_SIZE / 2) - 5, SQUARE_SIZE / 2, SQUARE_SIZE / 2);
+
+        Font font = new Font("Arial", Font.BOLD, 10);
+        Color textColor = Color.BLACK;
+        g2d.setFont(font);
+        g2d.setColor(textColor);
+
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int textHeight = fm.getHeight();
+        int textX = BIG_SQUARE_SIZE + SQUARE_SIZE + 12 + (SQUARE_SIZE / 2 - textWidth) / 2;
+        int textY = BIG_SQUARE_SIZE + (SQUARE_SIZE / 2 - textHeight) / 2 + fm.getAscent();
+
+        g2d.drawString(text, textX, textY);
+        g2d.drawRect(BIG_SQUARE_SIZE + SQUARE_SIZE + 12, BIG_SQUARE_SIZE + (SQUARE_SIZE / 2) - 5, SQUARE_SIZE / 2, SQUARE_SIZE / 2);
     }
 
     private boolean isClickedPawnInBase(Pawn pawn) {
