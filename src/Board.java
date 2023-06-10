@@ -391,6 +391,7 @@ public class Board extends JPanel implements MouseListener {
             if(squareID >= squares.size())
                 squareID -= squares.size();
             pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(squareID)));
+
             return true;
         }
         return false;
