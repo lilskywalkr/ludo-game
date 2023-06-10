@@ -400,7 +400,6 @@ public class Board extends JPanel implements MouseListener {
                 break;
             counter++;
         }
-
         return pawns;
     }
     private void checkNextSquare(Pawn pawn,int step)
