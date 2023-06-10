@@ -6,10 +6,18 @@ public class Pawn {
     private Point location;
     private final Color color;
 
-    public Pawn(Point location, Color color) {
+    private int pawnID;
+
+    public Pawn(Point location, Color color,int pawnID) {
         this.location = location;
         this.color = color;
+        this.pawnID = pawnID;
     }
+
+    public int getPawnID() {
+        return pawnID;
+    }
+
     public Color getColor() {
         return color;
     }
