@@ -21,8 +21,10 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_HORIZONTAL_FIELDS = 6;
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
-    public boolean isDiceRolled = true;
+    public boolean isDiceRolled = false;
     public boolean hasMoved = false;
+    public boolean oneMoreMove = false;
+    public boolean wasColorChanged = false;
 
     public static final int MAXIMUM_ROLLED_VALUE = 6;
     private Color currentPlayerColor;
@@ -119,7 +121,7 @@ public class Board extends JPanel implements MouseListener {
     @Override
     protected void paintComponent(Graphics g) {
 
-        System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
+
 
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
@@ -291,43 +293,34 @@ public class Board extends JPanel implements MouseListener {
        for (User user: users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
                 if (!hasMoved) {
-                    movePawn(pawn, user);
-                    hasMoved = true;
-                    isDiceRolled = false;
+                    if(movePawn(pawn, user)) {
+                        hasMoved = true;
+                        isDiceRolled = false;
+                    }
                 }
-
-//                if(diceValue == 6) {
-//                    isDiceRolled = true;
-//                }
-
-//                if (!isDiceRolled) {
-//                    currentPlayerColor = getNextColor(user.getColor());
-//                }
-
                 repaint();
                 return;
             }
         }
 
         if (isButtonClicked(point, rectX, rectY, rectWidth, rectHeight)) {
-            diceValue = randomNumberGenerate();
-            if (!isDiceRolled) {
-                hasMoved = false;
-                if (diceValue == 6) {
-                    isDiceRolled = false;
-//                currentPlayerColor = getNextColor(currentPlayerColor);
-//                diceValue = randomNumberGenerate();
-                } else {
-                    currentPlayerColor = getNextColor(currentPlayerColor);
-                }
 
-//                diceValue = randomNumberGenerate();
-                repaint();
-                isDiceRolled = true;
+            if (!isDiceRolled) {
+                System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
+                if(diceValue == 6) {
+                    diceValue = randomNumberGenerate();
+                    isDiceRolled = true;
+                    hasMoved = false;
+                } else {
+                    diceValue = randomNumberGenerate();
+                    currentPlayerColor = getNextColor(currentPlayerColor);
+                    if(userPawnsNumberInBase(getUserByColor(currentPlayerColor)) != 4 || diceValue == 6)
+                        isDiceRolled = true;
+                    hasMoved = false;
+                }
             }
-        } else {
-            repaint();
         }
+        repaint();
     }
 
     private User getUserByColor(Color color) {
@@ -388,15 +381,19 @@ public class Board extends JPanel implements MouseListener {
         return false;
     }
 
-    public void movePawn(Pawn pawn, User currentUser) {
-        if(isClickedPawnInBase(pawn) && diceValue == 6)
+    public boolean movePawn(Pawn pawn, User currentUser) {
+        if(isClickedPawnInBase(pawn) && diceValue == 6) {
             currentUser.moveOutOfBase(pawn);
+            return true;
+        }
         else if(!isClickedPawnInBase(pawn)) {
             int squareID = getSquareId(pawn) + diceValue;
             if(squareID >= squares.size())
                 squareID -= squares.size();
             pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(squareID)));
+            return true;
         }
+        return false;
     }
 
     private int getSquareId(Pawn pawn) {
