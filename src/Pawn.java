@@ -6,12 +6,27 @@ public class Pawn {
     private Point location;
     private final Color color;
 
+    private int positionInHome;
+
+
+    private int numberOfMoves;
+
     private int pawnID;
 
     public Pawn(Point location, Color color,int pawnID) {
         this.location = location;
         this.color = color;
         this.pawnID = pawnID;
+        positionInHome = -2;
+        numberOfMoves = 0;
+    }
+
+    public int getNumberOfMoves() {
+        return numberOfMoves;
+    }
+
+    public void setNumberOfMoves(int numberOfMoves) {
+        this.numberOfMoves = numberOfMoves;
     }
 
     public int getPawnID() {
@@ -27,6 +42,14 @@ public class Pawn {
 
     public void setLocation(Point p) {
         this.location = p;
+    }
+
+    public int getPositionInHome() {
+        return positionInHome;
+    }
+
+    public void setPositionInHome(int positionInHome) {
+        this.positionInHome = positionInHome;
     }
     public static Point setPawnPrintingValues(Point from) {
         Point p = new Point();

@@ -21,6 +21,8 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_HORIZONTAL_FIELDS = 6;
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
+
+    private static final int MAX_NUMBER_OF_MOVES = 55;
     public boolean isDiceRolled = false;
     public boolean hasMoved = false;
     public boolean oneMoreMove = false;
@@ -29,6 +31,7 @@ public class Board extends JPanel implements MouseListener {
     public static final int MAXIMUM_ROLLED_VALUE = 6;
     private Color currentPlayerColor;
     LinkedHashMap<Color,LinkedList<Point>> baseFields;
+    LinkedHashMap<Color,LinkedList<Point>> homeFields;
     LinkedList<User> users;
     LinkedList<Point> squares;
 
@@ -92,6 +95,14 @@ public class Board extends JPanel implements MouseListener {
 
     public void initializeBases() {
         baseFields = new LinkedHashMap<>();
+        homeFields = new LinkedHashMap<>();
+
+        LinkedList<Point> redPoints = new LinkedList<>();
+        LinkedList<Point> greenPoints = new LinkedList<>();
+        LinkedList<Point> yellowPoints = new LinkedList<>();
+        LinkedList<Point> bluePoints = new LinkedList<>();
+
+
         baseFields.put(Color.RED, setBaseCordinates(SQUARE_SIZE + SQUARE_SIZE/2, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
                 4*SQUARE_SIZE - SQUARE_SIZE/10, SQUARE_SIZE + SQUARE_SIZE/2 - SQUARE_SIZE/10,
                 SQUARE_SIZE + SQUARE_SIZE/2, 4*SQUARE_SIZE - SQUARE_SIZE/5,
@@ -108,6 +119,31 @@ public class Board extends JPanel implements MouseListener {
                 BIG_SQUARE_SIZE*2+SQUARE_SIZE*9/10, BIG_SQUARE_SIZE*2 - 8*SQUARE_SIZE/5,
                 BIG_SQUARE_SIZE*2 - 3*SQUARE_SIZE/2, BIG_SQUARE_SIZE*2+SQUARE_SIZE*4/5,
                 BIG_SQUARE_SIZE*2+SQUARE_SIZE*9/10, BIG_SQUARE_SIZE*2+SQUARE_SIZE*4/5));
+
+
+
+        for (int i = 0; i < 5; i++) {
+            redPoints.add(new Point((SQUARE_SIZE-SQUARE_SIZE/2)+SQUARE_SIZE*i,(BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2)));
+        }
+        homeFields.put(Color.RED,redPoints);
+
+        for (int i = 0; i < 5; i++) {
+            greenPoints.add(new Point((BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2),(SQUARE_SIZE-SQUARE_SIZE/2)+SQUARE_SIZE*i));
+        }
+        homeFields.put(Color.GREEN,greenPoints);
+
+        for (int i = 0; i < 5; i++) {
+            bluePoints.add(new Point((2*BIG_SQUARE_SIZE-SQUARE_SIZE/2+BIG_SQUARE_SIZE/3)-i*SQUARE_SIZE,(BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2)));
+        }
+        homeFields.put(Color.BLUE,bluePoints);
+
+
+
+        for (int i = 0; i < 5; i++) {
+            yellowPoints.add(new Point((BIG_SQUARE_SIZE+SQUARE_SIZE/2+SQUARE_SIZE),(2*BIG_SQUARE_SIZE+SQUARE_SIZE/2+BIG_SQUARE_SIZE/3)-i*SQUARE_SIZE));
+        }
+        homeFields.put(Color.YELLOW,yellowPoints);
+
         initializeUsers();
     }
     public void initializeUsers() {
@@ -268,9 +304,14 @@ public class Board extends JPanel implements MouseListener {
     }
 
     private int randomNumberGenerate() {
-        Random random = new Random();
-
-        return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
+//        Random random = new Random();
+//
+//        return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
+        if(diceValue == 6)
+        {
+            return 3;
+        }
+        return 6;
     }
 
     private void diceThrow(Graphics2D g2d) {
@@ -291,6 +332,7 @@ public class Board extends JPanel implements MouseListener {
         int rectY = 50 * 8;
         int rectWidth = 50;
         int rectHeight = 50;
+        System.out.println(homeFields);
 
        for (User user: users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
@@ -308,7 +350,7 @@ public class Board extends JPanel implements MouseListener {
         if (isButtonClicked(point, rectX, rectY, rectWidth, rectHeight)) {
 
             if (!isDiceRolled) {
-                System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
+             //   System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
                 if(diceValue == 6) {
                     diceValue = randomNumberGenerate();
                     isDiceRolled = true;
@@ -345,7 +387,7 @@ public class Board extends JPanel implements MouseListener {
         LinkedList<Pawn> pawns = user.getPawns();
         LinkedList<Point> basefieldsPoints = baseFields.get(user.getColor());
         for (int i = 0; i < 4; i++) {
-            if (pawns.get(i).getLocation().equals(basefieldsPoints.get(i))) {
+            if (pawns.get(i).getLocation().equals(basefieldsPoints.get(i)) || pawns.get(i).getPositionInHome()>=0 ) {
                 count++;
             }
         }
@@ -402,16 +444,32 @@ public class Board extends JPanel implements MouseListener {
         }
         return pawns;
     }
-    private void checkNextSquare(Pawn pawn,int step)
+    private boolean checkNextSquare(Pawn pawn, User currentUser,int step)
     {
-        LinkedList<Pawn> pawns = getPawnFromNextSquare(pawn,step);
-        if(!pawns.isEmpty())
+        if(pawn.getPositionInHome() == -2)
         {
-            for (Pawn enemyPawn : pawns) {
-                enemyPawn.setLocation(baseFields.get(enemyPawn.getColor()).get(enemyPawn.getPawnID()));
+            LinkedList<Pawn> pawns = getPawnFromNextSquare(pawn,step);
+            if(!pawns.isEmpty())
+            {
+                for (int i = 0; i < pawns.size(); i++) {
+                    pawns.get(i).setNumberOfMoves(0);
+                    pawns.get(i).setPositionInHome(-2);
+                    pawns.get(i).setLocation(baseFields.get(pawns.get(i).getColor()).get(pawns.get(i).getPawnID()));
+                }
             }
+            return true;
+        }
+        else if(pawn.getPositionInHome() == -1)
+        {
+            for (Pawn currentUserPawn : currentUser.getPawns()) {
+                if(currentUserPawn.getPositionInHome() == pawn.getPositionInHome()+diceValue)
+                    return false;
+            }
+            return true;
+
         }
 
+        return false;
     }
 
 
@@ -420,14 +478,38 @@ public class Board extends JPanel implements MouseListener {
             currentUser.moveOutOfBase(pawn);
             return true;
         }
+        else if(pawn.getPositionInHome()>-1 || (pawn.getPositionInHome() == -1 && diceValue == 6))
+            return true;
+        else if(pawn.getPositionInHome() == -1)
+        {
+            if(checkNextSquare(pawn,currentUser,diceValue))
+            {
+                pawn.setPositionInHome(diceValue-1);
+                pawn.setLocation(Pawn.setPawnPrintingValues(homeFields.get(pawn.getColor()).get(pawn.getPositionInHome())));
+            }
+            return true;
+        }
         else if(!isClickedPawnInBase(pawn)) {
 
-            checkNextSquare(pawn,diceValue);
-            pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
             int squareID = getSquareId(pawn) + diceValue;
+
+            if(pawn.getNumberOfMoves()+diceValue >= MAX_NUMBER_OF_MOVES && pawn.getPositionInHome()==-2)
+            {
+                pawn.setNumberOfMoves(MAX_NUMBER_OF_MOVES);
+                pawn.setPositionInHome(-1);
+                pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(currentUser.getEndField())));
+                return true;
+            }
+            checkNextSquare(pawn,currentUser,diceValue);
+          //  pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
+
+
+            if(squareID > currentUser.getEndField())
+
             if(squareID >= squares.size())
                 squareID -= squares.size();
             pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(squareID)));
+            pawn.setNumberOfMoves(pawn.getNumberOfMoves()+diceValue);
             return true;
         }
         return false;
