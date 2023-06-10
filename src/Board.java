@@ -281,29 +281,34 @@ public class Board extends JPanel implements MouseListener {
         return false;
     }
 
-    private Pawn getPawnFromNextSquare(Pawn pawn,int step)
+    private LinkedList<Pawn> getPawnFromNextSquare(Pawn pawn,int step)
     {
         int counter = 0;
+        LinkedList<Pawn> pawns = new LinkedList<>();
         int currentPosition = getSquareId(pawn);
         for (Color color : baseFields.keySet()) {
             if(!color.equals(pawn.getColor()) && users.get(counter).getColor().equals(color))
             {
                 for (Pawn enemyPawn : users.get(counter).getPawns()) {
                     if (getSquareId(enemyPawn) == currentPosition + step)
-                        return enemyPawn;
+                        pawns.add(enemyPawn);
                 }
             }
+            if(!pawns.isEmpty())
+                break;
             counter++;
         }
 
-        return null;
+        return pawns;
     }
     private void checkNextSquare(Pawn pawn,int step)
     {
-        Pawn enemyPawn = getPawnFromNextSquare(pawn,step);
-        if(enemyPawn !=null)
+        LinkedList<Pawn> pawns = getPawnFromNextSquare(pawn,step);
+        if(!pawns.isEmpty())
         {
-            enemyPawn.setLocation(baseFields.get(enemyPawn.getColor()).get(enemyPawn.getPawnID()));
+            for (Pawn enemyPawn : pawns) {
+                enemyPawn.setLocation(baseFields.get(enemyPawn.getColor()).get(enemyPawn.getPawnID()));
+            }
         }
 
     }
