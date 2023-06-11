@@ -22,6 +22,8 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
 
+    private Graphics2D g2d;
+
     private static final int MAX_NUMBER_OF_MOVES = 55;
     public boolean isDiceRolled = false;
     public boolean hasMoved = false;
@@ -123,12 +125,12 @@ public class Board extends JPanel implements MouseListener {
 
 
         for (int i = 0; i < 5; i++) {
-            redPoints.add(new Point((SQUARE_SIZE-SQUARE_SIZE/2)+SQUARE_SIZE*i,(BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2)));
+            redPoints.add(new Point((2*SQUARE_SIZE-SQUARE_SIZE/2)+SQUARE_SIZE*i,(BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2)));
         }
         homeFields.put(Color.RED,redPoints);
 
         for (int i = 0; i < 5; i++) {
-            greenPoints.add(new Point((BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2),(SQUARE_SIZE-SQUARE_SIZE/2)+SQUARE_SIZE*i));
+            greenPoints.add(new Point((BIG_SQUARE_SIZE+SQUARE_SIZE+SQUARE_SIZE/2),(2*SQUARE_SIZE-SQUARE_SIZE/2)+SQUARE_SIZE*i));
         }
         homeFields.put(Color.GREEN,greenPoints);
 
@@ -140,7 +142,7 @@ public class Board extends JPanel implements MouseListener {
 
 
         for (int i = 0; i < 5; i++) {
-            yellowPoints.add(new Point((BIG_SQUARE_SIZE+SQUARE_SIZE/2+SQUARE_SIZE),(2*BIG_SQUARE_SIZE+SQUARE_SIZE/2+BIG_SQUARE_SIZE/3)-i*SQUARE_SIZE));
+            yellowPoints.add(new Point((BIG_SQUARE_SIZE+SQUARE_SIZE/2+SQUARE_SIZE),(2*BIG_SQUARE_SIZE+SQUARE_SIZE/2+SQUARE_SIZE)-i*SQUARE_SIZE));
         }
         homeFields.put(Color.YELLOW,yellowPoints);
 
@@ -196,6 +198,9 @@ public class Board extends JPanel implements MouseListener {
     }
     
     private void diceButton(Graphics2D g2d, int x, int y, int width, int height) {
+
+
+
         Color backgroundColor = Color.WHITE;
         String text = "Roll!";
 
@@ -311,11 +316,7 @@ public class Board extends JPanel implements MouseListener {
         Random random = new Random();
 
         return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
-//        if(diceValue == 6)
-//        {
-//            return 3;
-//        }
-//        return 6;
+
     }
 
     private void diceThrow(Graphics2D g2d) {
@@ -330,6 +331,10 @@ public class Board extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
+
+
+
         Point point = e.getPoint();
         Pawn pawn;
         int rectX = 50 * 7;
@@ -463,7 +468,7 @@ public class Board extends JPanel implements MouseListener {
             if(!color.equals(pawn.getColor()) && users.get(counter).getColor().equals(color))
             {
                 for (Pawn enemyPawn : users.get(counter).getPawns()) {
-                    if (getSquareId(enemyPawn) == currentPosition + step)
+                    if (getSquareId(enemyPawn) == currentPosition + step && enemyPawn.getPositionInHome()<0)
                         pawns.add(enemyPawn);
                 }
             }
