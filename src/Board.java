@@ -189,6 +189,10 @@ public class Board extends JPanel implements MouseListener {
         drawRoundThingy(g2d, currentPlayerColor);
         drawPawns(g2d);
         diceThrow(g2d);
+
+        if (areUserPawnsInHome(getUserByColor(currentPlayerColor))) {
+            drawGameOver(g2d);
+        }
     }
     
     private void diceButton(Graphics2D g2d, int x, int y, int width, int height) {
@@ -304,14 +308,14 @@ public class Board extends JPanel implements MouseListener {
     }
 
     private int randomNumberGenerate() {
-//        Random random = new Random();
-//
-//        return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
-        if(diceValue == 6)
-        {
-            return 3;
-        }
-        return 6;
+        Random random = new Random();
+
+        return random.nextInt(MAXIMUM_ROLLED_VALUE) + ROLLING_OFFSET;
+//        if(diceValue == 6)
+//        {
+//            return 3;
+//        }
+//        return 6;
     }
 
     private void diceThrow(Graphics2D g2d) {
@@ -332,7 +336,7 @@ public class Board extends JPanel implements MouseListener {
         int rectY = 50 * 8;
         int rectWidth = 50;
         int rectHeight = 50;
-        System.out.println(homeFields);
+//        System.out.println(homeFields);
 
        for (User user: users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
@@ -381,6 +385,16 @@ public class Board extends JPanel implements MouseListener {
         return clickedPosition.x >= btnX && clickedPosition.x <= btnX + btnWidth && clickedPosition.y >= btnY && clickedPosition.y <= btnY + btnHeight;
     }
 
+    private boolean areUserPawnsInHome(User user) {
+        for (Pawn pawn : user.getPawns()) {
+            if (pawn.getPositionInHome() < 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private int userPawnsNumberInBase(User user) {
         int count = 0;
 
@@ -414,6 +428,21 @@ public class Board extends JPanel implements MouseListener {
 
         g2d.drawString(text, textX, textY);
         g2d.drawRect(BIG_SQUARE_SIZE + SQUARE_SIZE + 12, BIG_SQUARE_SIZE + (SQUARE_SIZE / 2) - 5, SQUARE_SIZE / 2, SQUARE_SIZE / 2);
+    }
+
+    private void drawGameOver(Graphics2D g2d) {
+        String message = "You won the game";
+
+        g2d.setColor(currentPlayerColor);
+        g2d.fillRect(BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE / 2, BIG_SQUARE_SIZE / 2);
+
+        Font font = new Font("Arial", Font.BOLD, 15);
+        Color textColor = Color.BLACK;
+        g2d.setFont(font);
+        g2d.setColor(textColor);
+
+        g2d.drawString(message, BIG_SQUARE_SIZE + 13, BIG_SQUARE_SIZE + SQUARE_SIZE + 25);
+        g2d.drawRect(BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE / 2, BIG_SQUARE_SIZE / 2);
     }
 
     private boolean isClickedPawnInBase(Pawn pawn) {
