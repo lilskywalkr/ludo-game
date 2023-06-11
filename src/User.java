@@ -12,8 +12,8 @@ public class User {
     public static final int END_RED_FIELD = 43;
     private LinkedList<Pawn> pawns;
     private final Color color;
-    private LinkedList<Point> startFields;
-    private LinkedList<Point> endFields;
+    private Point startFields;
+    private Point endFields;
     public User(Color color, LinkedList<Point> baseFields, LinkedList<Point> squares) {
         this.color = color;
         initializePawnsAndBasefields(baseFields);
@@ -46,35 +46,51 @@ public class User {
         return point.x <= pawn.getLocation().x + Pawn.PAWN_WIDTH && point.x >= pawn.getLocation().x  && point.y <=pawn.getLocation().y + Pawn.PAWN_HEIGHT && point.y >= pawn.getLocation().y;
     }
     public void initializeFields(LinkedList<Point> squares) {
-        startFields = new LinkedList<>();
-        endFields = new LinkedList<>();
+        startFields = new Point();
+        endFields = new Point();
         if (color.equals(Color.GREEN)) {
             Point square = squares.get(START_GREEN_FIELD);
-            startFields.add(square);
+            startFields = new Point(square);
             square = squares.get(END_GREEN_FIELD);
-            endFields.add(square);
+            endFields = new Point(square);
         }
         else if (color.equals(Color.BLUE)) {
             Point square = squares.get(START_BLUE_FIELD);
-            startFields.add(square);
+            startFields = new Point(square);
             square = squares.get(END_BLUE_FIELD);
-            endFields.add(square);
+            endFields = new Point(square);
         }
         else if (color.equals(Color.YELLOW)) {
             Point square = squares.get(START_YELLOW_FIELD);
-            startFields.add(square);
+            startFields = new Point(square);
             square = squares.get(END_YELLOW_FIELD);
-            endFields.add(square);
+            endFields = new Point(square);
         }
         else if(color.equals(Color.RED)){
             Point square = squares.get(START_RED_FIELD);
-            startFields.add(square);
+            startFields = new Point(square);
             square = squares.get(END_RED_FIELD);
-            endFields.add(square);
+            endFields = new Point(square);
         }
     }
 
     public void moveOutOfBase(Pawn pawn) {
-        pawn.setLocation(Pawn.setPawnPrintingValues(startFields.get(0)));
+        pawn.setLocation(Pawn.setPawnPrintingValues(startFields));
+    }
+
+    public int getEndField()
+    {
+        if (color.equals(Color.GREEN)) {
+           return END_GREEN_FIELD;
+        }
+        else if (color.equals(Color.BLUE)) {
+            return END_BLUE_FIELD;
+        }
+        else if (color.equals(Color.YELLOW)) {
+            return END_YELLOW_FIELD;
+        }
+        else {
+           return END_RED_FIELD;
+        }
     }
 }
