@@ -22,7 +22,6 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
 
-    private Graphics2D g2d;
 
     private static final int MAX_NUMBER_OF_MOVES = 55;
     public boolean isDiceRolled = false;
