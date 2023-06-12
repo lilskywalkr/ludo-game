@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
+import java.util.List;
 
 
 public class Board extends JPanel implements MouseListener {
@@ -194,12 +195,10 @@ public class Board extends JPanel implements MouseListener {
         if (areUserPawnsInHome(getUserByColor(currentPlayerColor))) {
             drawGameOver(g2d);
         }
+        drawNumberOfPawns(g2d,getUserByColor(currentPlayerColor));
     }
     
     private void diceButton(Graphics2D g2d, int x, int y, int width, int height) {
-
-
-
         Color backgroundColor = Color.WHITE;
         String text = "Roll!";
 
@@ -330,10 +329,6 @@ public class Board extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
-
-
-
         Point point = e.getPoint();
         Pawn pawn;
         int rectX = 50 * 7;
@@ -447,6 +442,52 @@ public class Board extends JPanel implements MouseListener {
 
         g2d.drawString(message, BIG_SQUARE_SIZE + 13, BIG_SQUARE_SIZE + SQUARE_SIZE + 25);
         g2d.drawRect(BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE / 2, BIG_SQUARE_SIZE / 2);
+    }
+
+    private void drawNumberOfPawns(Graphics2D g2d, User user){
+        int[] pawnsAndCords = calculateNumberOfPawnsInSquareAndCoords(user);
+        if(pawnsAndCords[0] > 1){
+            try {
+                ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/nr" + pawnsAndCords[0] + ".png")));
+                Image pawnIcon = icon.getImage();
+                g2d.drawImage(pawnIcon, pawnsAndCords[1], pawnsAndCords[2], 30, 30, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int[] calculateNumberOfPawnsInSquareAndCoords(User user) {
+        int[] pawnsAndCoords = {0, 0, 0, 0, 0};
+        List<Point> uniqueLocations = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            Pawn currentPawn = user.getPawns().get(i);
+            Point currentLocation = currentPawn.getLocation();
+
+            if (!uniqueLocations.contains(currentLocation)) {
+                uniqueLocations.add(currentLocation);
+
+                int sameLocationCount = 1;
+                for (int j = i + 1; j < 4; j++) {
+                    Pawn nextPawn = user.getPawns().get(j);
+                    Point nextLocation = nextPawn.getLocation();
+
+                    if (currentLocation.equals(nextLocation)) {
+                        sameLocationCount++;
+                    }
+                }
+
+                if (sameLocationCount > 1) {
+                    pawnsAndCoords[0] = sameLocationCount;
+                    pawnsAndCoords[1] = currentLocation.x;
+                    pawnsAndCoords[2] = currentLocation.y;
+                    break;
+                }
+            }
+        }
+
+        return pawnsAndCoords;
     }
 
     private boolean isClickedPawnInBase(Pawn pawn) {
