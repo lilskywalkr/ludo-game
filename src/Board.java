@@ -22,6 +22,12 @@ public class Board extends JPanel implements MouseListener {
     public static final int LONG_HORIZONTAL_FIELDS = 6;
     public static final int LONG_VERTICAL_FIELDS = 6;
     public static final int NUMBER_OF_FINAL_FIELDS = 5;
+    public static final int NUMBER_OF_PAWNS = 4;
+    public static final int LAST_FIELD_BEFORE_HOME = -1;
+    public static final int PAWN_ON_BOARD = -2;
+    public static final int NUMBER_WIDTH = 30;
+    public static final int NUMBER_HEIGHT = 30;
+
 
 
     private static final int MAX_NUMBER_OF_MOVES = 55;
@@ -335,7 +341,6 @@ public class Board extends JPanel implements MouseListener {
         int rectY = 50 * 8;
         int rectWidth = 50;
         int rectHeight = 50;
-//        System.out.println(homeFields);
 
        for (User user: users) {
             if((pawn = user.getPawn(point))!=null && user.getColor().equals(currentPlayerColor)) {
@@ -353,15 +358,14 @@ public class Board extends JPanel implements MouseListener {
         if (isButtonClicked(point, rectX, rectY, rectWidth, rectHeight)) {
 
             if (!isDiceRolled) {
-             //   System.out.println("Aktualny kolor: "+ getColorName(currentPlayerColor) );
-                if(diceValue == 6) {
+                if(diceValue == MAXIMUM_ROLLED_VALUE) {
                     diceValue = randomNumberGenerate();
                     isDiceRolled = true;
                     hasMoved = false;
                 } else {
                     diceValue = randomNumberGenerate();
                     currentPlayerColor = getNextColor(currentPlayerColor);
-                    if(userPawnsNumberInBase(getUserByColor(currentPlayerColor)) != 4 || diceValue == 6)
+                    if(userPawnsNumberInBase(getUserByColor(currentPlayerColor)) != 4 || diceValue == MAXIMUM_ROLLED_VALUE)
                         isDiceRolled = true;
                     hasMoved = false;
                 }
@@ -399,7 +403,7 @@ public class Board extends JPanel implements MouseListener {
 
         LinkedList<Pawn> pawns = user.getPawns();
         LinkedList<Point> basefieldsPoints = baseFields.get(user.getColor());
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < NUMBER_OF_PAWNS; i++) {
             if (pawns.get(i).getLocation().equals(basefieldsPoints.get(i)) || pawns.get(i).getPositionInHome()>=0 ) {
                 count++;
             }
@@ -440,7 +444,7 @@ public class Board extends JPanel implements MouseListener {
         g2d.setFont(font);
         g2d.setColor(textColor);
 
-        g2d.drawString(message, BIG_SQUARE_SIZE + 13, BIG_SQUARE_SIZE + SQUARE_SIZE + 25);
+        g2d.drawString(message, BIG_SQUARE_SIZE + 13, BIG_SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE/2);
         g2d.drawRect(BIG_SQUARE_SIZE, BIG_SQUARE_SIZE, BIG_SQUARE_SIZE / 2, BIG_SQUARE_SIZE / 2);
     }
 
@@ -450,7 +454,7 @@ public class Board extends JPanel implements MouseListener {
             try {
                 ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("assets/nr" + pawnsAndCords[0] + ".png")));
                 Image pawnIcon = icon.getImage();
-                g2d.drawImage(pawnIcon, pawnsAndCords[1], pawnsAndCords[2], 30, 30, null);
+                g2d.drawImage(pawnIcon, pawnsAndCords[1], pawnsAndCords[2], NUMBER_WIDTH, NUMBER_HEIGHT, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -461,7 +465,7 @@ public class Board extends JPanel implements MouseListener {
         int[] pawnsAndCoords = {0, 0, 0, 0, 0};
         List<Point> uniqueLocations = new ArrayList<>();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < NUMBER_OF_PAWNS; i++) {
             Pawn currentPawn = user.getPawns().get(i);
             Point currentLocation = currentPawn.getLocation();
 
@@ -469,7 +473,7 @@ public class Board extends JPanel implements MouseListener {
                 uniqueLocations.add(currentLocation);
 
                 int sameLocationCount = 1;
-                for (int j = i + 1; j < 4; j++) {
+                for (int j = i + 1; j < NUMBER_OF_PAWNS; j++) {
                     Pawn nextPawn = user.getPawns().get(j);
                     Point nextLocation = nextPawn.getLocation();
 
@@ -520,20 +524,20 @@ public class Board extends JPanel implements MouseListener {
     }
     private boolean checkNextSquare(Pawn pawn, User currentUser,int step)
     {
-        if(pawn.getPositionInHome() == -2)
+        if(pawn.getPositionInHome() == PAWN_ON_BOARD)
         {
             LinkedList<Pawn> pawns = getPawnFromNextSquare(pawn,step);
             if(!pawns.isEmpty())
             {
                 for (int i = 0; i < pawns.size(); i++) {
                     pawns.get(i).setNumberOfMoves(0);
-                    pawns.get(i).setPositionInHome(-2);
+                    pawns.get(i).setPositionInHome(PAWN_ON_BOARD);
                     pawns.get(i).setLocation(baseFields.get(pawns.get(i).getColor()).get(pawns.get(i).getPawnID()));
                 }
             }
             return true;
         }
-        else if(pawn.getPositionInHome() == -1)
+        else if(pawn.getPositionInHome() == LAST_FIELD_BEFORE_HOME)
         {
             for (Pawn currentUserPawn : currentUser.getPawns()) {
                 if(currentUserPawn.getPositionInHome() == pawn.getPositionInHome()+diceValue)
@@ -548,13 +552,13 @@ public class Board extends JPanel implements MouseListener {
 
 
     public boolean movePawn(Pawn pawn, User currentUser) {
-        if(isClickedPawnInBase(pawn) && diceValue == 6) {
+        if(isClickedPawnInBase(pawn) && diceValue == MAXIMUM_ROLLED_VALUE) {
             currentUser.moveOutOfBase(pawn);
             return true;
         }
-        else if(pawn.getPositionInHome()>-1 || (pawn.getPositionInHome() == -1 && diceValue == 6))
+        else if(pawn.getPositionInHome()>LAST_FIELD_BEFORE_HOME || (pawn.getPositionInHome() == LAST_FIELD_BEFORE_HOME && diceValue == MAXIMUM_ROLLED_VALUE))
             return true;
-        else if(pawn.getPositionInHome() == -1)
+        else if(pawn.getPositionInHome() == LAST_FIELD_BEFORE_HOME)
         {
             if(checkNextSquare(pawn,currentUser,diceValue))
             {
@@ -567,16 +571,14 @@ public class Board extends JPanel implements MouseListener {
 
             int squareID = getSquareId(pawn) + diceValue;
 
-            if(pawn.getNumberOfMoves()+diceValue >= MAX_NUMBER_OF_MOVES && pawn.getPositionInHome()==-2)
+            if(pawn.getNumberOfMoves()+diceValue >= MAX_NUMBER_OF_MOVES && pawn.getPositionInHome()==PAWN_ON_BOARD)
             {
                 pawn.setNumberOfMoves(MAX_NUMBER_OF_MOVES);
-                pawn.setPositionInHome(-1);
+                pawn.setPositionInHome(LAST_FIELD_BEFORE_HOME);
                 pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(currentUser.getEndField())));
                 return true;
             }
             checkNextSquare(pawn,currentUser,diceValue);
-          //  pawn.setLocation(Pawn.setPawnPrintingValues(squares.get(getSquareId(pawn) + diceValue)));
-
 
             if(squareID > currentUser.getEndField())
 
